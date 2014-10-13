@@ -69,7 +69,7 @@ object FilterDefaults {
   val DEFAULT_MAXPAGE = 1
 }
 
-class SearchUrl(var filter: Filter) extends HttpHelper {
+class SearchUrl(val filter: Filter, val startPage: Int) extends HttpHelper {
 
   private val searchUrlTemplate: String = "http://zoeken.kvk.nl/search.ashx?" +
     "callback=jQuery110207092458721687029_1388446807034" +
@@ -107,6 +107,6 @@ class SearchUrl(var filter: Filter) extends HttpHelper {
       getTrueFalse(filter.rechtspersoon),
       getOneZero(filter.vervallen),
       getOneZero(filter.uitgeschreven),
-      filter.startpage)
+      ((startPage - 1) * 10))
 
 }
