@@ -13,5 +13,4 @@ if [ "$1" == "" ]; then
     exit 2
 fi
 
-update_release "./src/main/scala/RestClient.scala" $1
-update_release "./src/main/scala/TestRestService.scala" $1
+update_release "./src/main/scala/nl/newparadigm/cli/KvKWebScraper.scala" $1
