@@ -58,19 +58,27 @@ class ExtractResult(element: Element) {
 
   private def getHoofdvestiging() = element.select("a.hoofdvestigingTag").size() > 0
 
-  private def getStatus() = Some(element.select("p.status").text())
+  private def getStatus() = getWhenSet(element.select("p.status").text())
 
-  private def getBestaandeHandelsnamen() = Some(extractHandelsnamen(element.select("div.more-search-info h4:contains(Bestaande handelsnamen) + p").text()))
+  private def getBestaandeHandelsnamen() = extractHandelsnamen(element.select("div.more-search-info h4:contains(Bestaande handelsnamen) + p").text())
 
-  private def getVervallenHandelsnamen() = Some(extractHandelsnamen(element.select("div.more-search-info h4:contains(Vervallen handelsnamen) + p").text()))
+  private def getVervallenHandelsnamen() = extractHandelsnamen(element.select("div.more-search-info h4:contains(Vervallen handelsnamen) + p").text())
 
-  private def getSamenwerkingsverband() = Some(element.select("div.more-search-info h4:contains(Naam samenwerkingsverband) + p").text())
+  private def getSamenwerkingsverband() = getWhenSet(element.select("div.more-search-info h4:contains(Naam samenwerkingsverband) + p").text())
 
   private def getStatutaireNaam() = element.select("div.more-search-info h4:contains(Statutaire naam) + p").text()
 
   private def getAdres() = Some(adres).getOrElse(None) 
 
-  private def extractHandelsnamen(handelsnamen: String): Array[String] = handelsnamen.split("""\s\|\s""")
+  private def getWhenSet(value: String): Option[String] = {
+    if(value.length() == 0) None
+    else Some(value)
+  }
+  
+  private def extractHandelsnamen(handelsnamen: String): Option[Array[String]] = {
+    if(handelsnamen.length() == 0) None
+    else Some(handelsnamen.split("""\s\|\s""")) 
+  }
 
   private def getKvkMeta() = element.select("ul.kvk-meta li")
 

@@ -51,7 +51,7 @@ class Controller(filter: Filter) {
       timer.stop()
       
       //TODO What happens if processing fails? Handle error correctly
-      val searchStats = new SearchStats(search.getNumResults(), search.getNumResults())
+      val searchStats = new SearchStats(search.getNumResults(), search.getNumPages())
       val processingStats = new ProcessingStats(filter.startpage, filter.maxpages, resultList.size)
       val stats = new Stats(timer.execTime(false), searchStats, processingStats)
       
