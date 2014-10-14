@@ -15,7 +15,7 @@ class KvKWebScraper {
   private val logger = Logger(LoggerFactory.getLogger(classOf[KvKWebScraper]))
 
   val parser = new scopt.OptionParser[FilterConfig]("kvkzoek") {
-    head("kvkzoek", KvKWebScraper.release)
+    head("\nkvkzoek", KvKWebScraper.release, "\n")
     opt[String]('a', "handelsnaam") action { (x, c) =>
       c.copy(handelsnaam = x)
     } text ("name or partial name of an organization to limit the search to")
@@ -55,7 +55,10 @@ class KvKWebScraper {
     opt[Boolean]('r', "uitgeschreven") action { (x, c) =>
       c.copy(uitgeschreven = x)
     } text ("select 'uitgeschreven'")
-    note("some notes.\n")
+    note("\nSome notes:\n")
+    opt[Unit]("prettify") action { (_, c) =>
+      c.copy(prettify = true)
+    } text ("prettify JSON results")
     help("help") text ("prints this usage text")
   }
 
@@ -77,9 +80,12 @@ class KvKWebScraper {
 
       controller.run() match {
         case Some(x) => {
-          //TODO add CLI option to pretty or compact print 
-          //println(Json.prettyPrint(Json.toJson(x)))
-          println(Json.stringify(Json.toJson(x)))
+          if (filter.prettify) {
+            println(Json.prettyPrint(Json.toJson(x)))
+          } else {
+            println(Json.stringify(Json.toJson(x)))
+          }
+
           System.exit(0)
         }
         case None => {
