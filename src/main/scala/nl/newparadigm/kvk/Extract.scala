@@ -16,7 +16,6 @@ import play.api.libs.json._
 import scala.collection.mutable.ListBuffer
 import scala.util.matching.Regex
 
-// TODO Refactor extracting results out of PageProcessor 
 class ExtractResult(element: Element) {
 
   private val logger = Logger(LoggerFactory.getLogger(classOf[ExtractResult]))
@@ -137,12 +136,9 @@ class PageDecoder() {
   private var error = false
 
   def decode(content: String): Option[String] = {
-    var html = Option("")
-
-    // This is a hack. Is their a way to initialize the variable directly to None?
-    html = None
-
     logger.trace(s"Retrieved content:\n\t$content")
+
+    var html: Option[String] = None
 
     // Match everything between " (" and ");", the matching groups are ignored (group 1 & 3)
     val pattern = "(?<=\\s\\()(.*)(?=\\);)".r

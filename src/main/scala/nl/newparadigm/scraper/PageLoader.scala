@@ -18,10 +18,7 @@ class PageLoader(val searchUrl: String) {
 
     val httpClient = new DefaultHttpClient()
     var inputStream: java.io.InputStream = null
-    var content = Option("")
-
-    // This is a hack. Is their a way to initialize the variable directly to None?
-    content = None
+    var content : Option[String] = None
 
     try {
       val httpResponse = httpClient.execute(new HttpGet(searchUrl))

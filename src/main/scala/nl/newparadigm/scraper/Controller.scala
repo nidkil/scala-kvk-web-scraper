@@ -41,7 +41,6 @@ class Controller(filter: Filter) {
         //TODO Gracefully handle None
         //TODO When processing multiple pages and one fails does everything fail?
         pageProcessor.process() match {
-          //TODO Create combined JSON, instead of individual JSON
           case Some(x) => {
             resultList = resultList ::: x
           }
@@ -51,10 +50,10 @@ class Controller(filter: Filter) {
 
       timer.stop()
       
-      //TODO Move outside for, aggregate results here (combine lists)
+      //TODO What happens if processing fails? Handle error correctly
       val searchStats = new SearchStats(search.getNumResults(), search.getNumResults())
       val processingStats = new ProcessingStats(filter.startpage, filter.maxpages, resultList.size)
-      val stats = new Stats(timer.execTime(), searchStats, processingStats)
+      val stats = new Stats(timer.execTime(false), searchStats, processingStats)
       
       Some(new SearchResults(KvKWebScraper.api, KvKWebScraper.release, stats, Some(resultList)))
     } else {
