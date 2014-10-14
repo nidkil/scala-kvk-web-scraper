@@ -5,7 +5,7 @@
 *.project
 *.sc
 *.settings
-.dat
+*.dat
 
 # sbt specific
 .cache/
