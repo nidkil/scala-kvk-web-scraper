@@ -18,7 +18,8 @@ case class FilterConfig (
   var uitgeschreven: Boolean = FilterDefaults.DEFAULT_UITGESCHREVEN,
   var startpage: Int = FilterDefaults DEFAULT_STARTPAGE,
   var maxpages: Int = FilterDefaults DEFAULT_MAXPAGE,
-  var prettify: Boolean = false) extends FilterBase
+  var prettyPrint: Boolean = false,
+  var file: String = FilterDefaults.DEFAULT_EMPTY) extends FilterBase
 
 class Filter(filterConfig : FilterConfig) extends FilterBase {
   
@@ -44,7 +45,6 @@ class Filter(filterConfig : FilterConfig) extends FilterBase {
   def uitgeschreven = filterConfig.uitgeschreven
   def startpage = filterConfig.startpage
   def maxpages = filterConfig.maxpages
-  def prettify = filterConfig.prettify
   
   override def toString = s"handelsnaam=$handelsnaam, " +
     s"kvknummer=$kvknummer, " +

@@ -33,7 +33,7 @@ class RegexHelper {
       getGroupValue(m, RegexHelper.GROEP_HUISLETTER, result, "huisletter")
       getGroupValue(m, RegexHelper.GROEP_HUISNR_TOEV, result, "huisnrtoev")
 
-      logger.debug(s"Extracted adres [str=$str, straat=${result.getOrElse("straat", "")}, huisnr=${result.getOrElse("huisnr", "")}, huisletter=${result.getOrElse("huisletter", "")}, huisnrtoev=${result.getOrElse("huisnrtoev", "")}")
+      logger.trace(s"Extracted adres [str=$str, straat=${result.getOrElse("straat", "")}, huisnr=${result.getOrElse("huisnr", "")}, huisletter=${result.getOrElse("huisletter", "")}, huisnrtoev=${result.getOrElse("huisnrtoev", "")}")
     }
     
     result
