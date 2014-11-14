@@ -2,6 +2,8 @@ package nl.newparadigm.cli
 
 import com.typesafe.scalalogging.Logger
 
+import java.io.{File, PrintWriter}
+
 import nl.newparadigm.kvk.FilterConfig
 import nl.newparadigm.kvk.Filter
 import nl.newparadigm.scraper.Controller
@@ -14,8 +16,8 @@ class KvKWebScraper {
 
   private val logger = Logger(LoggerFactory.getLogger(classOf[KvKWebScraper]))
 
-  val parser = new scopt.OptionParser[FilterConfig]("kvkzoek") {
-    head("kvkzoek", KvKWebScraper.release)
+  private val parser = new scopt.OptionParser[FilterConfig]("kvkzoek") {
+    head("\nkvkzoek", KvKWebScraper.release, "\n")
     opt[String]('a', "handelsnaam") action { (x, c) =>
       c.copy(handelsnaam = x)
     } text ("name or partial name of an organization to limit the search to")
@@ -49,16 +51,27 @@ class KvKWebScraper {
     opt[Boolean]('r', "rechtspersoon") action { (x, c) =>
       c.copy(rechtspersoon = x)
     } text ("select 'rechtspersoon'")
-    opt[Boolean]('r', "vervallen") action { (x, c) =>
+    opt[Boolean]('v', "vervallen") action { (x, c) =>
       c.copy(vervallen = x)
     } text ("select 'vervallen'")
-    opt[Boolean]('r', "uitgeschreven") action { (x, c) =>
+    opt[Boolean]('u', "uitgeschreven") action { (x, c) =>
       c.copy(uitgeschreven = x)
     } text ("select 'uitgeschreven'")
-    note("some notes.\n")
+    note("\nSome notes:\n")
+    opt[String]('f', "file") action { (x, c) =>
+      c.copy(file = x)
+    } text ("write results to file")
+    opt[Unit]("prettyPrint") action { (_, c) =>
+      c.copy(prettyPrint = true)
+    } text ("prettify JSON results")
     help("help") text ("prints this usage text")
   }
 
+  private def writeToFile(path: String, data: String): Unit = {
+    val pw = new java.io.PrintWriter(new File(path))
+    try pw.write(data) finally pw.close()
+  }
+  
   def run(args: Array[String]) {
     logger.info("Initializing CLI")
 
@@ -77,9 +90,20 @@ class KvKWebScraper {
 
       controller.run() match {
         case Some(x) => {
-          //TODO add CLI option to pretty or compact print 
-          //println(Json.prettyPrint(Json.toJson(x)))
-          println(Json.stringify(Json.toJson(x)))
+          if (config.prettyPrint) {
+            if (config.file.length() == 0) {
+              println(Json.prettyPrint(Json.toJson(x)))                            
+            } else {
+              writeToFile(config.file, Json.prettyPrint(Json.toJson(x)))              
+            }
+          } else {
+            if (config.file.length() == 0) {
+              println(Json.stringify(Json.toJson(x)))                            
+            } else {
+              writeToFile(config.file, Json.stringify(Json.toJson(x)))              
+            }
+          }
+
           System.exit(0)
         }
         case None => {

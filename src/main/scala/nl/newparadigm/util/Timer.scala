@@ -9,6 +9,9 @@ class Timer {
   
   def stop() = { stopTime = System.currentTimeMillis() }
   
-  def execTime() : String = "%s msecs".format(stopTime - startTime)
+  def execTime(msecs : Boolean = true) : String = {
+    if(msecs) "%s msecs".format(stopTime - startTime) 
+    else "%s,%s secs".format((stopTime - startTime) / 1000, ((stopTime - startTime) % 1000).toString().padTo(4, "0").mkString) 
+  }
 
 }
