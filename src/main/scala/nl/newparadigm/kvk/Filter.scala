@@ -17,7 +17,9 @@ case class FilterConfig (
   var vervallen: Boolean = FilterDefaults.DEFAULT_VERVALLEN,
   var uitgeschreven: Boolean = FilterDefaults.DEFAULT_UITGESCHREVEN,
   var startpage: Int = FilterDefaults DEFAULT_STARTPAGE,
-  var maxpages: Int = FilterDefaults DEFAULT_MAXPAGE) extends FilterBase
+  var maxpages: Int = FilterDefaults DEFAULT_MAXPAGE,
+  var prettyPrint: Boolean = false,
+  var file: String = FilterDefaults.DEFAULT_EMPTY) extends FilterBase
 
 class Filter(filterConfig : FilterConfig) extends FilterBase {
   

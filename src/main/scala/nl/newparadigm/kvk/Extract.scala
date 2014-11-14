@@ -1,25 +1,21 @@
 package nl.newparadigm.kvk
 
-import scala.util.matching.Regex
-
-import nl.newparadigm.kvk.model.{ Adres, Organisatie }
-import nl.newparadigm.scraper.PageLoader
-import nl.newparadigm.util.JSoup
-import nl.newparadigm.util.Util
-
-import org.slf4j.LoggerFactory
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 import com.fasterxml.jackson.core.JsonParseException
 
 import com.typesafe.scalalogging.Logger
 
+import nl.newparadigm.kvk.model.{ Adres, Organisatie }
+import nl.newparadigm.scraper.PageLoader
+import nl.newparadigm.util.{JSoup, RegexHelper, Util}
+
+import org.slf4j.LoggerFactory
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
 import play.api.libs.json._
 
 import scala.collection.mutable.ListBuffer
+import scala.util.matching.Regex
 
-// TODO Refactor extracting results out of PageProcessor 
 class ExtractResult(element: Element) {
 
   private val logger = Logger(LoggerFactory.getLogger(classOf[ExtractResult]))
@@ -62,19 +58,27 @@ class ExtractResult(element: Element) {
 
   private def getHoofdvestiging() = element.select("a.hoofdvestigingTag").size() > 0
 
-  private def getStatus() = Some(element.select("p.status").text())
+  private def getStatus() = getWhenSet(element.select("p.status").text())
 
-  private def getBestaandeHandelsnamen() = Some(extractHandelsnamen(element.select("div.more-search-info h4:contains(Bestaande handelsnamen) + p").text()))
+  private def getBestaandeHandelsnamen() = extractHandelsnamen(element.select("div.more-search-info h4:contains(Bestaande handelsnamen) + p").text())
 
-  private def getVervallenHandelsnamen() = Some(extractHandelsnamen(element.select("div.more-search-info h4:contains(Vervallen handelsnamen) + p").text()))
+  private def getVervallenHandelsnamen() = extractHandelsnamen(element.select("div.more-search-info h4:contains(Vervallen handelsnamen) + p").text())
 
-  private def getSamenwerkingsverband() = Some(element.select("div.more-search-info h4:contains(Naam samenwerkingsverband) + p").text())
+  private def getSamenwerkingsverband() = getWhenSet(element.select("div.more-search-info h4:contains(Naam samenwerkingsverband) + p").text())
 
   private def getStatutaireNaam() = element.select("div.more-search-info h4:contains(Statutaire naam) + p").text()
 
   private def getAdres() = Some(adres).getOrElse(None) 
 
-  private def extractHandelsnamen(handelsnamen: String): Array[String] = handelsnamen.split("""\s\|\s""")
+  private def getWhenSet(value: String): Option[String] = {
+    if(value.length() == 0) None
+    else Some(value)
+  }
+  
+  private def extractHandelsnamen(handelsnamen: String): Option[Array[String]] = {
+    if(handelsnamen.length() == 0) None
+    else Some(handelsnamen.split("""\s\|\s""")) 
+  }
 
   private def getKvkMeta() = element.select("ul.kvk-meta li")
 
@@ -93,24 +97,33 @@ class ExtractResult(element: Element) {
   private def extractKvKMeta() = {
     var adresRegelCnt = 0
     val elements = JSoup._IterableElements(getKvkMeta())
-    for (e <- elements) {
-      e.text() match {
+    for (element <- elements) {
+      element.text() match {
         case txt if txt.startsWith("KVK") => kvkNummer = txt.substring(4)
         case txt if txt.startsWith("Vestigingsnr.") => vestigingsnummer = txt.substring(14)
         case txt if txt.startsWith("Nevenvestiging") => nevenvestiging = true
         case txt if txt.startsWith("Rechtspersoon") => rechtspersoon = true
         case _ => {
-          //TODO splits straat, huisnummer, huisletter, huisnummertoevoeging
-          //TODO format postcode
           if (adresRegelCnt > 2) {
-            // Ignore empty lines
-            if (e.text().length() > 0) logger.warn("Unknown value found [%s]:\n%s".format(e.text(), elements))
+            // Ignore empty lines, otherwise log a warning message that an unkown value was found
+            if (element.text().length() > 0) logger.warn("Unknown value found [%s]:\n%s".format(element.text(), elements))
           } else {
             if(adres == None) adres = Some(new Adres())
             adresRegelCnt match {
-              case 0 => getAdres().get.straat = e.text().trim()
-              case 1 => getAdres().get.postcode = Util.formatPostcode(e.text())
-              case 2 => getAdres().get.plaats = e.text()
+              case 0 => {
+                val regexHelper = new RegexHelper()
+                val result = regexHelper.splitAdres(element.text())
+                
+                result.foreach { 
+                  case (key, value) if key.equals("straat") => getAdres().get.straat = value                  
+                  case (key, value) if key.equals("huisnr") => getAdres().get.huisnummer = Some(value)                  
+                  case (key, value) if key.equals("huisletter") => getAdres().get.huisletter = Some(value)                  
+                  case (key, value) if key.equals("huisnrtoev") => getAdres().get.huisnummertoevoeging = Some(value)                  
+                }
+                
+              }
+              case 1 => getAdres().get.postcode = Util.formatPostcode(element.text())
+              case 2 => getAdres().get.plaats = element.text()
             }
             adresRegelCnt += 1
           }
@@ -131,14 +144,11 @@ class PageDecoder() {
   private var error = false
 
   def decode(content: String): Option[String] = {
-    var html = Option("")
-
-    // This is a hack. Is their a way to initialize the variable directly to None?
-    html = None
-
     logger.trace(s"Retrieved content:\n\t$content")
 
-    // Match everything between " (" and ");", the matching groups are ignored
+    var html: Option[String] = None
+
+    // Match everything between " (" and ");", the matching groups are ignored (group 1 & 3)
     val pattern = "(?<=\\s\\()(.*)(?=\\);)".r
     val jsonContent = (pattern findFirstIn content)
     // Fix bug that the json specification does not allow a tab character (\t) in a
