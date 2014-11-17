@@ -1,13 +1,21 @@
 package nl.newparadigm.scraper
 
+import org.slf4j.LoggerFactory
+
 import com.typesafe.scalalogging.Logger
 
-import nl.newparadigm.cli.KvKWebScraper
-import nl.newparadigm.kvk.model.{ ProcessingStats, Organisatie, SearchResults, Stats, SearchStats }
-import nl.newparadigm.kvk.{ Filter, Search, Pager, PageProcessor, SearchUrl }
+import nl.newparadigm.kvk.Filter
+import nl.newparadigm.kvk.PageProcessor
+import nl.newparadigm.kvk.Pager
+import nl.newparadigm.kvk.Search
+import nl.newparadigm.kvk.SearchUrl
+import nl.newparadigm.kvk.Version
+import nl.newparadigm.kvk.model.Organisatie
+import nl.newparadigm.kvk.model.ProcessingStats
+import nl.newparadigm.kvk.model.SearchResults
+import nl.newparadigm.kvk.model.SearchStats
+import nl.newparadigm.kvk.model.Stats
 import nl.newparadigm.util.Timer
-
-import org.slf4j.LoggerFactory
 
 class Controller(filter: Filter) {
 
@@ -55,7 +63,7 @@ class Controller(filter: Filter) {
       val processingStats = new ProcessingStats(filter.startpage, filter.maxpages, resultList.size)
       val stats = new Stats(timer.execTime(false), searchStats, processingStats)
       
-      Some(new SearchResults(KvKWebScraper.api, KvKWebScraper.release, stats, Some(resultList)))
+      Some(new SearchResults(Version.api, Version.release, stats, Some(resultList)))
     } else {
       None
     }

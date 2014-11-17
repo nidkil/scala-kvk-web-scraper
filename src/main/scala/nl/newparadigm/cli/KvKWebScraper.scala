@@ -70,8 +70,6 @@ class KvKWebScraper {
 }
 
 object KvKWebScraper extends App {
-  val api = "v1"
-  val release = "0.1.0"
   val scrapper = new KvKWebScraper()
   scrapper.run(args)
 }
