@@ -1,11 +1,12 @@
 package nl.newparadigm.cli
 
 import nl.newparadigm.kvk.FilterConfig
+import nl.newparadigm.kvk.Version
 
 object Parameters {
 
   val parser = new scopt.OptionParser[FilterConfig]("kvkzoek") {
-    head("\nkvkzoek", KvKWebScraper.release, "\n")
+    head("\nkvkzoek", Version.release, "\n")
     opt[String]('a', "handelsnaam") action { (x, c) =>
       c.copy(handelsnaam = x)
     } text ("name or partial name of an organization to limit the search to")
