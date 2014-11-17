@@ -4,7 +4,7 @@ name := "scala-kvk-web-scraper"
 
 organization := "com.nidkil"
 
-version := "0.3.0"
+version := "0.3.1"
 
 scalaVersion := "2.11.2"
 
