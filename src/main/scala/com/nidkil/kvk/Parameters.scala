@@ -1,8 +1,5 @@
 package com.nidkil.kvk
 
-import com.nidkil.kvk.FilterConfig
-import com.nidkil.kvk.Version
-
 object Parameters {
 
   val parser = new scopt.OptionParser[FilterConfig]("kvkzoek") {
