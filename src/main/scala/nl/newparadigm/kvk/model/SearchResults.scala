@@ -9,9 +9,7 @@ case class SearchStats(
   val numPages: Int)
 
 object SearchStats {
-
   implicit val searchStatsFmt = Json.format[SearchStats]
-
 }
 
 case class ProcessingStats(
@@ -20,9 +18,7 @@ case class ProcessingStats(
   val results: Int)
 
 object ProcessingStats {
-
   implicit val processingStatsFmt = Json.format[ProcessingStats]
-
 }
 
 case class Stats(
@@ -31,9 +27,7 @@ case class Stats(
   val processingStats: ProcessingStats)
 
 object Stats {
-
   implicit val statsFmt = Json.format[Stats]
-
 }
 
 case class SearchResults(
@@ -41,11 +35,8 @@ case class SearchResults(
   val release: String,
   val stats: Stats,
   var results: Option[List[Organisatie]] = None) {
-
 }
 
 object SearchResults {
-
   implicit val searchResultsFmt = Json.format[SearchResults]
-
 }
