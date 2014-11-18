@@ -24,8 +24,6 @@ class KvKWebScraper {
   }
   
   def run(args: Array[String]) {
-    logger.info("Initializing CLI")
-
     parser.parse(args, FilterConfig()) map { config =>
       var filter = new Filter(config)
 
@@ -33,37 +31,31 @@ class KvKWebScraper {
 
       if (!filter.isValid()) {
         parser.reportError("One of the following options must be specified: handelsnaam, kvknummer, straat, huisnummer, postcode, plaats\nTry --help for more information")
-
         System.exit(2)
       }
 
       val controller = new Controller(filter)
 
       controller.run match {
-        case Some(x) => {
-          if (config.prettyPrint) {
-            if (config.file.length() == 0) {
+        case Some(x) =>
+          if (config.prettyPrint)
+            if (config.file.length() == 0) 
               println(Json.prettyPrint(Json.toJson(x)))                            
-            } else {
+            else 
               writeToFile(config.file, Json.prettyPrint(Json.toJson(x)))              
-            }
-          } else {
-            if (config.file.length() == 0) {
+          else
+            if (config.file.length() == 0)
               println(Json.stringify(Json.toJson(x)))                            
-            } else {
+            else
               writeToFile(config.file, Json.stringify(Json.toJson(x)))              
-            }
-          }
-
           System.exit(0)
-        }
-        case None => {
+        case None =>
           println("No results")
           System.exit(1)
-        }
       }
     } getOrElse {
-      //TODO Handle errors
+      // Unknown argument, error message will have been displayed to console
+      System.exit(3)
     }
   }
 
