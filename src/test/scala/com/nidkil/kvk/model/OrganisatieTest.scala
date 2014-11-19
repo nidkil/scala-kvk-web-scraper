@@ -2,8 +2,6 @@ package com.nidkil.kvk.model
 
 import org.scalatest._
 
-import com.nidkil.kvk.model.Adres;
-import com.nidkil.kvk.model.Organisatie;
 import com.nidkil.util.Util
 
 import play.api.libs.json._
@@ -25,7 +23,7 @@ class OragnisationTest extends FlatSpec with Matchers {
     	adres = Some(adres),
     	status = Some("Actief"))
     info(organisatie.toString())
-    organisatie.toString() should be === ("handelsnaam=New Paradigm, statutaireNaam=New Paradigm BV, bestaandeHandelsnamen=orange10; blue10, vervallenHandelsnamen=orange20; blue20, kvkNummer=12345678, vestigingsnummer=87654321, hoofdvestiging=false, rechtspersoon=false, samenwerkingsverband=Happy Days, adres=2e Jerichostraat 16 B1 boven 3061 GL Rotterdam, status=Actief")
+    organisatie.toString() should be ("handelsnaam=New Paradigm, statutaireNaam=New Paradigm BV, bestaandeHandelsnamen=orange10; blue10, vervallenHandelsnamen=orange20; blue20, kvkNummer=12345678, vestigingsnummer=87654321, hoofdvestiging=false, rechtspersoon=false, samenwerkingsverband=Happy Days, adres=2e Jerichostraat 16 B1 boven 3061 GL Rotterdam, status=Actief")
   }
 
   "An Organisation" should "generate valid JSON when all properties have a value" in {
@@ -46,7 +44,7 @@ class OragnisationTest extends FlatSpec with Matchers {
     	status = Some("Actief"))
     val organisatieJson = Json.toJson(organisatie)
     info(Json.stringify(organisatieJson))
-    Json.stringify(organisatieJson) should be === ("{\"handelsnaam\":\"New Paradigm\",\"statutaireNaam\":\"New Paradigm BV\",\"bestaandeHandelsnamen\":[\"orange10\",\"blue10\"],\"vervallenHandelsnamen\":[\"orange20\",\"blue20\"],\"kvkNummer\":\"12345678\",\"vestigingsnummer\":\"87654321\",\"hoofdvestiging\":true,\"rechtspersoon\":true,\"samenwerkingsverband\":\"Happy Days\",\"adres\":{\"straat\":\"2e Jerichostraat\",\"huisnummer\":\"16\",\"huisnummerletter\":\"B1\",\"huisnummertoevoeging\":\"boven\",\"postcode\":\"3061 GL\",\"plaats\":\"Rotterdam\"},\"status\":\"Actief\"}")
+    Json.stringify(organisatieJson) should be ("{\"handelsnaam\":\"New Paradigm\",\"statutaireNaam\":\"New Paradigm BV\",\"bestaandeHandelsnamen\":[\"orange10\",\"blue10\"],\"vervallenHandelsnamen\":[\"orange20\",\"blue20\"],\"kvkNummer\":\"12345678\",\"vestigingsnummer\":\"87654321\",\"hoofdvestiging\":true,\"rechtspersoon\":true,\"samenwerkingsverband\":\"Happy Days\",\"adres\":{\"straat\":\"2e Jerichostraat\",\"huisnummer\":\"16\",\"huisnummerletter\":\"B1\",\"huisnummertoevoeging\":\"boven\",\"postcode\":\"3061 GL\",\"plaats\":\"Rotterdam\"},\"status\":\"Actief\"}")
   }
 
   "An Organisation" should "generate valid JSON when only the mandatory properties have a value" in {
@@ -56,7 +54,7 @@ class OragnisationTest extends FlatSpec with Matchers {
     	kvkNummer = "12345678")
     val organisatieJson = Json.toJson(organisatie)
     info(Json.stringify(organisatieJson))
-    Json.stringify(organisatieJson) should be === ("{\"handelsnaam\":\"New Paradigm\",\"statutaireNaam\":\"New Paradigm BV\",\"kvkNummer\":\"12345678\",\"hoofdvestiging\":false,\"rechtspersoon\":false}")
+    Json.stringify(organisatieJson) should be ("{\"handelsnaam\":\"New Paradigm\",\"statutaireNaam\":\"New Paradigm BV\",\"kvkNummer\":\"12345678\",\"hoofdvestiging\":false,\"rechtspersoon\":false}")
   }
 
   "An Organisation" should "beable to be initialized with only the mandatory properties and then update alle the properties" in {
@@ -66,7 +64,7 @@ class OragnisationTest extends FlatSpec with Matchers {
     	kvkNummer = "12345678")
     val organisatieJson1 = Json.toJson(organisatie)
     info(Json.stringify(organisatieJson1))
-    Json.stringify(organisatieJson1) should be === ("{\"handelsnaam\":\"New Paradigm\",\"statutaireNaam\":\"New Paradigm BV\",\"kvkNummer\":\"12345678\",\"hoofdvestiging\":false,\"rechtspersoon\":false}")
+    Json.stringify(organisatieJson1) should be ("{\"handelsnaam\":\"New Paradigm\",\"statutaireNaam\":\"New Paradigm BV\",\"kvkNummer\":\"12345678\",\"hoofdvestiging\":false,\"rechtspersoon\":false}")
     
     organisatie.handelsnaam = "Tjoa Coaching"
     organisatie.statutaireNaam = "Tjoa Coaching"
@@ -81,6 +79,6 @@ class OragnisationTest extends FlatSpec with Matchers {
     organisatie.status = Some("Inactief")
     val organisatieJson2 = Json.toJson(organisatie)
     info(Json.stringify(organisatieJson2))
-    Json.stringify(organisatieJson2) should be === ("{\"handelsnaam\":\"Tjoa Coaching\",\"statutaireNaam\":\"Tjoa Coaching\",\"bestaandeHandelsnamen\":[\"Tjoa Coaching\"],\"vervallenHandelsnamen\":[\"Tjoa Consulting\"],\"kvkNummer\":\"87654321\",\"vestigingsnummer\":\"12345678\",\"hoofdvestiging\":true,\"rechtspersoon\":true,\"samenwerkingsverband\":\"Rainy Nights\",\"adres\":{\"straat\":\"Rodezand 34\",\"postcode\":\"3011 AN\",\"plaats\":\"Den Haag\"},\"status\":\"Inactief\"}")
+    Json.stringify(organisatieJson2) should be ("{\"handelsnaam\":\"Tjoa Coaching\",\"statutaireNaam\":\"Tjoa Coaching\",\"bestaandeHandelsnamen\":[\"Tjoa Coaching\"],\"vervallenHandelsnamen\":[\"Tjoa Consulting\"],\"kvkNummer\":\"87654321\",\"vestigingsnummer\":\"12345678\",\"hoofdvestiging\":true,\"rechtspersoon\":true,\"samenwerkingsverband\":\"Rainy Nights\",\"adres\":{\"straat\":\"Rodezand 34\",\"postcode\":\"3011 AN\",\"plaats\":\"Den Haag\"},\"status\":\"Inactief\"}")
   }
 }
