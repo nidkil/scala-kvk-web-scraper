@@ -2,8 +2,6 @@ package com.nidkil.util
 
 import org.scalatest._
 
-import com.nidkil.util.Util;
-
 class UtilTest extends FlatSpec with Matchers {
 
   "A addTrailingSpace" should "add a trailing space if a string has a value" in {

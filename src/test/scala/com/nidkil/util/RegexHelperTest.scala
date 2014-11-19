@@ -2,8 +2,6 @@ package com.nidkil.util
 
 import org.scalatest._
 
-import com.nidkil.util.RegexHelper;
-
 class RegexHelperTest extends FlatSpec with Matchers {
 
   "A adresMatcher" should "extract the different parts of an address based on a regex pattern" in {
